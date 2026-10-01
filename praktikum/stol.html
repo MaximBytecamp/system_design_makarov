@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#151A3B">
+  <title>Архитектор по заявке · System design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Literata:ital,opsz,wght@0,7..72,600;0,7..72,700;1,7..72,400&family=Pixelify+Sans:wght@500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="stol.css">
+</head>
+<body class="desk">
+  <header class="desk__top">
+    <a href="index.html">← Описание практикума</a>
+    <span class="desk__title">Архитектор по заявке</span>
+    <span class="desk__case" id="case-name"></span>
+    <span class="spacer"></span>
+    <ol class="steps" id="steps" aria-label="Ход работы"></ol>
+    <a href="stol.html">Сменить заявку</a>
+  </header>
+
+  <section class="pick" id="pick" hidden>
+    <p class="eyebrow">Практикум · System design</p>
+    <h1>Выберите заявку</h1>
+    <p>Каждая заявка — три письма от одной компании. Работа по заявке сохраняется в этом браузере: можно закрыть вкладку и вернуться позже. Какую заявку выполнять, указывает преподаватель.</p>
+    <div class="cases" id="pick-list"></div>
+  </section>
+
+  <main class="grid" id="desk" hidden>
+    <section class="pane pane--mail" aria-label="Письма компании">
+      <div class="tabs" id="mail-tabs" role="tablist"></div>
+      <div class="pane__scroll"><div id="mail"></div></div>
+    </section>
+
+    <section class="board" aria-label="Схема системы">
+      <div class="toolbar">
+        <button type="button" class="btn btn--ghost" id="tb-undo" title="Ctrl+Z">Отменить</button>
+        <button type="button" class="btn btn--ghost" id="tb-clear">Очистить схему</button>
+        <button type="button" class="btn btn--ghost" id="tb-out" title="Уменьшить">−</button>
+        <span class="zoom" id="tb-zoom">100 %</span>
+        <button type="button" class="btn btn--ghost" id="tb-in" title="Увеличить">+</button>
+        <button type="button" class="btn btn--ghost" id="tb-fit">Вся схема</button>
+        <span class="toolbar__hint">Стрелка — от правого кружка к узлу · Delete — удалить выбранное</span>
+      </div>
+      <div class="canvas" id="canvas">
+        <div class="empty" id="empty"><b>Схема пуста</b>Добавьте детали из панели справа: нажмите на деталь или перетащите её сюда. Затем проведите стрелки от того, кто обращается, к тому, к кому обращаются.</div>
+      </div>
+    </section>
+
+    <aside class="pane pane--parts" aria-label="Детали и свойства">
+      <div class="tabs" id="parts-tabs" role="tablist"></div>
+      <div class="pane__scroll">
+        <div class="palette" id="palette"></div>
+        <div id="props" hidden></div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="../data/components.js"></script>
+  <script src="../data/cases.js"></script>
+  <script src="engine.js"></script>
+  <script src="stol.js"></script>
+</body>
+</html>

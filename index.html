@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ECEEF5">
+  <title>System design · Архитектура приложений · Макаров Максим Николаевич</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Literata:ital,opsz,wght@0,7..72,600;0,7..72,700;1,7..72,400&family=Pixelify+Sans:wght@500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .cover { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(260px, .9fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+    .cover h1 { margin: 12px 0 10px; font-family: var(--display); font-size: clamp(38px, 5.8vw, 76px); line-height: 1.02; letter-spacing: -.5px; }
+    .cover__sub { margin: 0 0 22px; font-family: var(--display); font-size: clamp(17px, 1.8vw, 25px); color: var(--leaf); }
+    .cover__meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; }
+    .cover__meta span { padding: 8px 12px; border: 2px solid var(--ink); background: #fff; font: 600 11px/1 var(--pixel); letter-spacing: 1px; }
+
+    /* Путь запроса на обложке: точка проходит узлы по порядку. */
+    .route { padding: 18px 18px 12px; border: 3px solid var(--ink); background: var(--page); box-shadow: 7px 7px 0 var(--ink); }
+    .route__tag { display: inline-block; margin: 0 0 12px; padding: 6px 11px; background: var(--ink); color: var(--leaf-bright); font: 600 10px/1 var(--pixel); letter-spacing: 1.4px; text-transform: uppercase; }
+    .route svg { display: block; width: 100%; height: auto; }
+    .route p { margin: 10px 0 0; font-size: 14px; line-height: 1.45; color: var(--ink-soft); }
+
+    .modules { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(330px, 100%), 1fr)); gap: 16px; margin-top: 22px; }
+    .module { display: grid; grid-template-columns: 40px minmax(0, 1fr); border: 3px solid var(--ink); background: var(--page); box-shadow: 6px 6px 0 var(--ink); }
+    .module__spine { background: var(--ink); color: var(--leaf-bright); display: flex; align-items: center; justify-content: center; }
+    .module__spine b { writing-mode: vertical-rl; transform: rotate(180deg); font: 700 12px/1 var(--mono); letter-spacing: 2px; }
+    .module__body { padding: 18px 20px 16px; }
+    .module h3 { margin: 0 0 6px; font-family: var(--display); font-size: 19px; }
+    .module > .module__body > p { margin: 0 0 12px; font-size: 14.5px; line-height: 1.45; color: var(--ink-soft); }
+    .toc { margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--rule); }
+    .toc li { margin: 0; border-bottom: 2px solid var(--rule); }
+    .toc li:last-child { border-bottom: 0; }
+    .toc a, .toc s { display: flex; align-items: baseline; gap: 10px; padding: 9px 0; text-decoration: none; font-size: 15px; }
+    .toc a { color: var(--ink); font-weight: 600; }
+    .toc a:hover { color: var(--leaf); }
+    .toc s { color: var(--ink-faint); }
+    .toc a > span, .toc s > span { flex: 1 1 auto; min-width: 0; line-height: 1.35; }
+    .toc b { flex: 0 0 auto; font: 600 12px/1.4 var(--mono); color: var(--ink-faint); }
+    .toc em { flex: 0 0 auto; margin-left: auto; font: 600 10px/1 var(--pixel); letter-spacing: 1px; text-transform: uppercase; font-style: normal; color: var(--leaf); }
+    .toc s em { color: var(--ink-faint); }
+
+    .feature { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px; align-items: center; margin: 22px 0; padding: 20px 22px; border: 3px solid var(--ink); background: var(--page); box-shadow: 8px 8px 0 var(--leaf); }
+    .feature h3 { margin: 4px 0 6px; font-size: 24px; }
+    .feature p { margin: 0; font-size: 15.5px; line-height: 1.5; color: var(--ink-soft); }
+    .feature a.go { padding: 12px 18px; border: 3px solid var(--ink); background: var(--ink); color: var(--leaf-bright); text-decoration: none; white-space: nowrap; font: 600 12px/1.3 var(--pixel); letter-spacing: 1.2px; text-transform: uppercase; }
+    .feature a.go:hover { background: var(--leaf); color: #fff; }
+    @media (max-width: 900px) { .cover, .feature { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="book">
+    <div class="book__body">
+      <div class="spine"><span>System design · Макаров М. Н.</span></div>
+
+      <main class="leaf">
+        <div class="running">
+          <p class="eyebrow">Учебное издание · для старших курсов</p>
+          <p class="running__folio">Макаров Максим Николаевич</p>
+        </div>
+
+        <section class="cover">
+          <div>
+            <h1>System design</h1>
+            <p class="cover__sub">Работа и выстраивание полноценных систем:<br>архитектура приложений</p>
+            <p>Справочник о том, как из отдельных программ собирается работающий сервис: через что проходит запрос пользователя, зачем перед серверами ставят балансировщик, как ограничивают частоту запросов, какие данные кладут в PostgreSQL, какие — в MongoDB, а какие — в Redis.</p>
+            <p>Справочник продолжает <a href="https://maximbytecamp.github.io/mongodb_theory_makarov/">справочник по MongoDB</a>. В нём разобрана работа с одной базой, а здесь показано, как базы данных встраиваются в систему вместе с балансировщиком, кешем и очередями. Материал проверяется практикумом «Архитектор по заявке», в котором схема собирается из деталей по письмам компании.</p>
+            <div class="cover__meta">
+              <span>PostgreSQL · MongoDB · Redis</span><span>балансировка</span><span>rate limiting</span><span>очереди</span>
+            </div>
+          </div>
+
+          <aside class="route" aria-label="Путь запроса через систему">
+            <span class="route__tag">Путь одного запроса</span>
+            <svg viewBox="0 0 320 300" role="img" aria-label="Клиент, балансировщик, ограничитель частоты, сервер приложения, Redis и PostgreSQL">
+              <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#151A3B"/></marker></defs>
+              <g fill="none" stroke="#151A3B" stroke-width="2" marker-end="url(#ar)">
+                <path d="M160,46 L160,70"/><path d="M160,114 L160,138"/><path d="M160,182 L160,206"/>
+                <path d="M130,250 C110,262 90,262 82,268"/><path d="M190,250 C210,262 230,262 238,268"/>
+              </g>
+              <g font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#151A3B">
+                <rect x="85" y="6" width="150" height="40" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="86" y="7" width="7" height="38" fill="#0E7490"/><text x="104" y="31">Браузер</text>
+                <rect x="85" y="74" width="150" height="40" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="86" y="75" width="7" height="38" fill="#6D28D9"/><text x="104" y="99">Балансировщик</text>
+                <rect x="85" y="142" width="150" height="40" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="86" y="143" width="7" height="38" fill="#6D28D9"/><text x="104" y="167">Ограничитель</text>
+                <rect x="85" y="210" width="150" height="40" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="86" y="211" width="7" height="38" fill="#1D4ED8"/><text x="104" y="235">Сервер</text>
+                <rect x="10" y="256" width="120" height="40" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="11" y="257" width="7" height="38" fill="#047857"/><text x="28" y="281">Redis</text>
+                <rect x="190" y="256" width="120" height="40" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="191" y="257" width="7" height="38" fill="#047857"/><text x="208" y="281">PostgreSQL</text>
+              </g>
+              <circle r="6" fill="#9E92FF" stroke="#151A3B" stroke-width="2">
+                <animateMotion dur="5s" repeatCount="indefinite" path="M160,26 L160,94 L160,162 L160,230 C200,250 230,262 250,276 C230,262 200,250 160,230 L160,162 L160,94 L160,26" keyTimes="0;0.15;0.3;0.45;0.55;0.65;0.8;0.9;1" keyPoints="0;0.15;0.3;0.45;0.5;0.55;0.7;0.85;1" calcMode="linear"/>
+              </circle>
+            </svg>
+            <p>Запрос проходит балансировщик и ограничитель частоты, сервер читает данные из базы, ответ возвращается тем же путём.</p>
+          </aside>
+        </section>
+
+        <section class="feature">
+          <div>
+            <p class="eyebrow">Практикум · модуль 2 дисциплины</p>
+            <h3>Архитектор по заявке</h3>
+            <p>Три компании присылают по три письма. По первому собирается схема системы, по второму данные раскладываются по хранилищам, по третьему схема меняется под рост нагрузки или сбой. Проверка — автоматическая, с подсказками.</p>
+          </div>
+          <a class="go" href="praktikum/index.html">К практикуму →</a>
+        </section>
+        <p><a class="repo" href="katalog/index.html">Каталог деталей — 27 деталей схемы: что это, когда ставить, как подключать</a></p>
+
+        <h2><span class="sec">План</span>Модули и главы</h2>
+        <p>Главы пишутся по порядку. Пока глава не готова, её тема разобрана в каталоге деталей и на занятии.</p>
+
+        <div class="modules">
+          <article class="module">
+            <div class="module__spine"><b>МОДУЛЬ 1</b></div>
+            <div class="module__body">
+              <h3>Путь запроса</h3>
+              <p>Через что проходит запрос от браузера до базы данных и обратно.</p>
+              <ul class="toc">
+                <li><s><b>1.1</b><span>Клиент, сервер, база: из чего состоит система</span><em>готовится</em></s></li>
+                <li><s><b>1.2</b><span>DNS и CDN: как запрос находит сервер</span><em>готовится</em></s></li>
+                <li><s><b>1.3</b><span>Балансировщик нагрузки</span><em>готовится</em></s></li>
+                <li><s><b>1.4</b><span>Сервер без состояния и масштабирование</span><em>готовится</em></s></li>
+                <li><s><b>1.5</b><span>API-шлюз и ограничение частоты</span><em>готовится</em></s></li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="module">
+            <div class="module__spine"><b>МОДУЛЬ 2</b></div>
+            <div class="module__body">
+              <h3>Хранилища данных</h3>
+              <p>Какие бывают хранилища и по каким признакам данные распределяют между ними.</p>
+              <ul class="toc">
+                <li><s><b>2.1</b><span>Реляционная база: транзакции и связи</span><em>готовится</em></s></li>
+                <li><s><b>2.2</b><span>Документная база: записи разной формы</span><em>готовится</em></s></li>
+                <li><s><b>2.3</b><span>Redis: кеш, сессии, счётчики</span><em>готовится</em></s></li>
+                <li><s><b>2.4</b><span>Файлы: объектное хранилище</span><em>готовится</em></s></li>
+                <li><s><b>2.5</b><span>Поисковый движок</span><em>готовится</em></s></li>
+                <li><s><b>2.6</b><span>Аналитическая база: ClickHouse</span><em>готовится</em></s></li>
+                <li><s><b>2.7</b><span>Как разложить сущности по хранилищам</span><em>готовится</em></s></li>
+                <li><a href="praktikum/index.html"><b>ПР</b><span>Практикум «Архитектор по заявке»</span><em>открыт</em></a></li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="module">
+            <div class="module__spine"><b>МОДУЛЬ 3</b></div>
+            <div class="module__body">
+              <h3>Нагрузка и отказы</h3>
+              <p>Что делать, когда одного сервера базы мало и когда он выходит из строя.</p>
+              <ul class="toc">
+                <li><s><b>3.1</b><span>Репликация</span><em>готовится</em></s></li>
+                <li><s><b>3.2</b><span>Шардирование</span><em>готовится</em></s></li>
+                <li><s><b>3.3</b><span>Кеширование и устаревание данных</span><em>готовится</em></s></li>
+                <li><s><b>3.4</b><span>Очереди и фоновые задачи</span><em>готовится</em></s></li>
+                <li><s><b>3.5</b><span>Журнал событий</span><em>готовится</em></s></li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="module">
+            <div class="module__spine"><b>МОДУЛЬ 4</b></div>
+            <div class="module__body">
+              <h3>Защита данных</h3>
+              <p>Доступы, шифрование, аудит и восстановление — то, что требует закон и что спасает после инцидента.</p>
+              <ul class="toc">
+                <li><s><b>4.1</b><span>Секреты и права доступа</span><em>готовится</em></s></li>
+                <li><s><b>4.2</b><span>Шифрование при хранении и передаче</span><em>готовится</em></s></li>
+                <li><s><b>4.3</b><span>Журнал аудита</span><em>готовится</em></s></li>
+                <li><s><b>4.4</b><span>Резервные копии и восстановление</span><em>готовится</em></s></li>
+                <li><s><b>4.5</b><span>Персональные данные и 152‑ФЗ</span><em>готовится</em></s></li>
+              </ul>
+            </div>
+          </article>
+        </div>
+
+        <div class="colophon">
+          <span>System design · учебное издание</span>
+          <span class="author-line">© Макаров Максим Николаевич</span>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,494 @@
+/* System design — типографика, книжная вёрстка и наглядные блоки.
+   Каркас общий со справочником по MongoDB, палитра своя: чертёжная синька.
+   Автор: Макаров Максим Николаевич
+
+   Файл разделён на части:
+     1. переменные и основа        4. блоки данных (документ, коллекция)
+     2. книга: корешок и страница  5. конвейер агрегации и анимации
+     3. типографика главы          6. кадры Compass, практики, служебное      */
+
+/* ── 1. Переменные и основа ──────────────────────────────────── */
+:root {
+  --ink: #151A3B;
+  --ink-soft: #414A72;
+  --ink-faint: #949BBD;
+  --leaf: #4A3AD4;
+  --leaf-bright: #9E92FF;
+  --leaf-pale: #E4E1FF;
+  --clay: #B8461B;
+  --clay-pale: #F8E1D6;
+  --violet: #8A2A7A;
+  --paper: #ECEEF5;
+  --page: #FCFCFF;
+  --rule: rgba(21, 26, 59, .16);
+  --pixel: "Pixelify Sans", "Roboto Mono", monospace;
+  --body: Inter, system-ui, -apple-system, sans-serif;
+  --display: Literata, "PT Serif", Georgia, "Times New Roman", serif;
+  --mono: "Roboto Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.6;
+  /* Фон-«миллиметровка»: намёк на разлинованную тетрадь, а не на экран. */
+  background-image:
+    linear-gradient(rgba(74, 58, 212, .07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 58, 212, .07) 1px, transparent 1px);
+  background-size: 32px 32px;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--leaf); }
+a:hover { color: var(--ink); }
+code, kbd, samp { font-family: var(--mono); }
+:target { scroll-margin-top: 24px; }
+
+.eyebrow {
+  margin: 0;
+  font: 600 11px/1.4 var(--pixel);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--leaf);
+}
+.author-line {
+  font: 600 11px/1.5 var(--pixel);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ── 2. Книга: корешок и блок страниц ────────────────────────── */
+.book { max-width: 1180px; margin: 0 auto; padding: 5vh 24px 8vh; }
+.book__body {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  border: 3px solid var(--ink);
+  box-shadow: 10px 10px 0 var(--ink);
+  background: var(--page);
+}
+
+.spine {
+  position: relative;
+  background: var(--ink);
+  color: var(--leaf-pale);
+  display: flex; align-items: center; justify-content: center;
+  padding: 22px 0;
+  overflow: hidden;
+}
+.spine span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font: 600 11px/1 var(--pixel);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--leaf-bright);
+}
+/* Прошивка корешка — две пунктирные линии. */
+.spine::before, .spine::after {
+  content: "";
+  position: absolute; top: 16px; bottom: 16px;
+  border-left: 2px dotted rgba(228, 225, 255, .4);
+}
+.spine::before { left: 16px; }
+.spine::after { right: 16px; }
+
+.leaf { padding: clamp(28px, 4vw, 64px); min-width: 0; }
+
+.running {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: clamp(24px, 3vw, 44px);
+}
+.running__folio { margin: 0; font: 600 11px/1.4 var(--pixel); letter-spacing: 1.4px; text-transform: uppercase; color: var(--ink-soft); }
+
+/* ── 3. Типографика главы ────────────────────────────────────── */
+.chapter-head { margin-bottom: 34px; }
+.chapter-num {
+  display: inline-block;
+  padding: 5px 12px 4px;
+  background: var(--ink); color: var(--leaf-bright);
+  font: 700 13px/1 var(--pixel); letter-spacing: 2px;
+}
+.chapter-head h1 {
+  margin: 14px 0 12px;
+  font-family: var(--display);
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.04;
+  font-weight: 700;
+  letter-spacing: -.5px;
+}
+.lead { margin: 0 0 18px; font-size: clamp(18px, 1.5vw, 21px); line-height: 1.5; color: var(--ink-soft); }
+
+.quote {
+  margin: 0; padding: 14px 20px;
+  border-left: 6px solid var(--leaf);
+  background: var(--leaf-pale);
+}
+.quote p { margin: 0; font-family: var(--display); font-size: 18px; font-style: italic; }
+
+h2 {
+  display: flex; align-items: center; gap: 14px;
+  margin: 52px 0 16px;
+  font-family: var(--display); font-size: clamp(24px, 2.6vw, 32px); line-height: 1.2;
+}
+h2 .sec {
+  flex: 0 0 auto;
+  padding: 4px 9px 3px;
+  background: var(--ink); color: var(--leaf-bright);
+  font: 700 12px/1 var(--pixel); letter-spacing: 1px;
+}
+h3 { margin: 32px 0 10px; font-family: var(--display); font-size: 21px; }
+p { margin: 0 0 14px; }
+ul, ol { margin: 0 0 16px; padding-left: 22px; }
+li { margin-bottom: 7px; }
+
+.term { font-weight: 700; border-bottom: 2px solid var(--leaf-bright); }
+strong { font-weight: 700; }
+
+/* Паспорт темы — таблица-шапка главы. */
+.passport {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0 0 30px;
+  border: 3px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--ink);
+  background: var(--page);
+}
+.passport > div { padding: 13px 15px; border-right: 2px solid var(--rule); }
+.passport > div:last-child { border-right: 0; }
+.passport dt { font: 600 10px/1.3 var(--pixel); letter-spacing: 1.2px; text-transform: uppercase; color: var(--leaf); margin-bottom: 5px; }
+.passport dd { margin: 0; font-size: 15px; line-height: 1.4; }
+
+.contents {
+  margin: 0 0 34px; padding: 16px 20px;
+  border: 2px dashed var(--ink);
+}
+.contents b { display: block; font: 600 10px/1.3 var(--pixel); letter-spacing: 1.3px; text-transform: uppercase; color: var(--leaf); margin-bottom: 9px; }
+.contents ol { columns: 2; column-gap: 34px; margin: 0; padding-left: 20px; font-size: 15px; }
+.contents li { margin-bottom: 4px; break-inside: avoid; }
+.contents a { color: var(--ink); text-decoration: none; border-bottom: 1px solid transparent; }
+.contents a:hover { border-bottom-color: var(--leaf); }
+
+/* Код и вывод. */
+figure.code { margin: 20px 0; border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); background: var(--page); overflow: hidden; }
+figure.code figcaption {
+  display: flex; justify-content: space-between; gap: 12px;
+  padding: 8px 14px;
+  background: var(--ink); color: var(--leaf-pale);
+  font: 600 10.5px/1.4 var(--pixel); letter-spacing: 1.1px; text-transform: uppercase;
+}
+figure.code pre { margin: 0; padding: 15px 18px; overflow-x: auto; font: 400 14px/1.65 var(--mono); }
+figure.code--out pre { background: #151A3B; color: #E4E1FF; }
+figure.code--out figcaption { background: var(--ink-soft); }
+
+/* Кнопка копирования: подставляется скриптом в подпись блока кода.
+   Блок с data-copy отдаёт в буфер не показанный текст, а строку из атрибута —
+   так многострочная команда копируется одной строкой и не рвётся при вставке. */
+.copy {
+  flex: 0 0 auto; margin: -8px -14px -8px 0; padding: 8px 13px;
+  border: 0; border-left: 2px solid rgba(215, 242, 228, .25);
+  background: transparent; color: var(--leaf-bright); cursor: pointer;
+  font: 600 10.5px/1.4 var(--pixel); letter-spacing: 1.1px; text-transform: uppercase;
+}
+.copy:hover { background: rgba(215, 242, 228, .12); }
+.copy:focus-visible { outline: 2px solid var(--leaf-bright); outline-offset: -3px; }
+.copy[data-state="done"] { color: #fff; background: var(--leaf); }
+.copy[data-state="fail"] { color: #F0A882; }
+figure.code--out .copy { border-left-color: rgba(215, 242, 228, .3); }
+@media print { .copy { display: none; } }
+.c { color: var(--ink-faint); }             /* комментарий  */
+.k { color: var(--violet); font-weight: 700; }  /* ключевое слово */
+.s { color: var(--clay); }                  /* строка       */
+.n { color: var(--leaf); font-weight: 700; }/* число        */
+.f { color: var(--ink); font-weight: 700; } /* функция      */
+.o { color: var(--leaf); font-weight: 700; }/* оператор $   */
+.fld { color: var(--violet); }              /* имя поля     */
+
+.table-scroll { overflow-x: auto; margin: 18px 0; border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); }
+table { width: 100%; border-collapse: collapse; background: var(--page); font-size: 15px; }
+th, td { padding: 9px 13px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule); }
+th { background: var(--leaf-pale); font: 600 11px/1.4 var(--pixel); letter-spacing: 1px; text-transform: uppercase; }
+tbody tr:last-child td { border-bottom: 0; }
+td code { font-size: 13.5px; }
+.errors-table td:first-child { white-space: nowrap; }
+
+.margin-note {
+  margin: 20px 0; padding: 13px 17px;
+  border-left: 6px solid var(--leaf);
+  background: var(--leaf-pale);
+  font-size: 15.5px;
+}
+.margin-note > b { display: block; font: 600 10.5px/1.3 var(--pixel); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 6px; }
+.margin-note p { margin: 0; }
+.margin-note--warn { border-left-color: var(--clay); background: var(--clay-pale); }
+.margin-note--warn b { color: var(--clay); }
+
+details {
+  margin: 0 0 10px; padding: 11px 16px;
+  border: 2px solid var(--ink); background: var(--page);
+}
+summary { cursor: pointer; font-weight: 600; }
+details[open] summary { margin-bottom: 9px; padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
+details p:last-child, details ul:last-child { margin-bottom: 0; }
+
+.cheat { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin: 20px 0; }
+.cheat > div { padding: 13px 15px; border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); background: var(--page); }
+.cheat > div > b { display: block; font: 600 10.5px/1.3 var(--pixel); letter-spacing: 1.1px; text-transform: uppercase; color: var(--leaf); margin-bottom: 8px; }
+.cheat > div > code { display: block; margin-bottom: 4px; font-size: 13px; white-space: pre-wrap; word-break: break-word; }
+
+.pager { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 46px 0 22px; padding-top: 18px; border-top: 2px solid var(--ink); }
+.pager a { font-weight: 600; text-decoration: none; }
+.pager a:hover { text-decoration: underline; }
+
+.colophon { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 12.5px; color: var(--ink-soft); }
+
+/* ── 4. Блоки данных: документ, коллекция, поля ──────────────── */
+/* Карточка документа BSON: подписанная «бумажка», а не кусок кода. */
+.doc {
+  border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink);
+  background: var(--page); margin: 18px 0; overflow: hidden;
+}
+.doc__bar {
+  display: flex; justify-content: space-between; gap: 12px; align-items: center;
+  padding: 7px 13px; background: var(--ink); color: var(--leaf-pale);
+  font: 600 10.5px/1.4 var(--pixel); letter-spacing: 1.1px; text-transform: uppercase;
+}
+.doc__body { padding: 13px 16px; font: 400 14px/1.75 var(--mono); overflow-x: auto; }
+.doc__body .fld { color: var(--violet); }
+.doc__body .type {
+  display: inline-block; margin-left: 8px; padding: 0 6px;
+  border: 1px solid var(--ink-faint); border-radius: 9px;
+  font: 600 10px/1.6 var(--pixel); letter-spacing: .6px; text-transform: uppercase; color: var(--ink-soft);
+}
+.doc--hit { box-shadow: 6px 6px 0 var(--leaf); border-color: var(--leaf); }
+.doc--miss { opacity: .5; }
+
+/* Сетка документов = коллекция. */
+.collection { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 20px 0; }
+.collection .doc { margin: 0; }
+
+/* Два способа записать один запрос: оболочка и Python. */
+.duo { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 20px 0; }
+.duo figure.code { margin: 0; }
+
+/* Поясняющая раскладка «оператор → что делает → сколько нашёл». */
+.ops { display: grid; gap: 10px; margin: 20px 0; }
+.ops > div {
+  display: grid; grid-template-columns: 128px minmax(0, 1fr) auto; gap: 14px; align-items: center;
+  padding: 10px 14px; border: 2px solid var(--ink); background: var(--page);
+}
+.ops b { font: 700 14px/1 var(--mono); color: var(--leaf); }
+.ops span { font-size: 15px; }
+.ops i {
+  font-style: normal; padding: 3px 10px; background: var(--ink); color: var(--leaf-bright);
+  font: 600 11px/1.5 var(--pixel); letter-spacing: 1px; white-space: nowrap;
+}
+
+/* Числовой акцент — результат прогона. */
+.stat { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
+.stat > span { flex: 1 1 150px; padding: 12px 15px; border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--leaf); background: var(--page); }
+.stat strong { display: block; font-family: var(--display); font-size: 30px; line-height: 1; margin-bottom: 5px; }
+.stat em { font-style: normal; font-size: 13.5px; color: var(--ink-soft); }
+
+/* ── 5. Конвейер агрегации и анимации ────────────────────────── */
+.pipeline { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0; margin: 22px 0; }
+.pipeline__stage {
+  flex: 1 1 150px; min-width: 0;
+  padding: 12px 14px;
+  border: 3px solid var(--ink); border-right-width: 0;
+  background: var(--page);
+}
+.pipeline__stage:last-child { border-right-width: 3px; }
+.pipeline__stage b { display: block; font: 700 14px/1.3 var(--mono); color: var(--leaf); margin-bottom: 5px; }
+.pipeline__stage span { display: block; font-size: 13.5px; color: var(--ink-soft); line-height: 1.4; }
+.pipeline__stage em { display: block; margin-top: 7px; font-style: normal; font: 600 10.5px/1.4 var(--pixel); letter-spacing: 1px; text-transform: uppercase; color: var(--ink); }
+.pipeline__stage.is-lit { background: var(--leaf-pale); }
+
+/* Документы, «текущие» через конвейер. Движение — по кругу, бесконечно. */
+.flow { position: relative; height: 46px; margin: -6px 0 22px; border: 2px dashed var(--rule); border-top: 0; overflow: hidden; }
+.flow i {
+  position: absolute; top: 13px; left: -26px;
+  width: 20px; height: 20px;
+  background: var(--leaf-bright); border: 2px solid var(--ink);
+  animation: flow-move 6s linear infinite;
+}
+.flow i:nth-child(2) { animation-delay: 1.2s; background: var(--leaf-pale); }
+.flow i:nth-child(3) { animation-delay: 2.4s; }
+.flow i:nth-child(4) { animation-delay: 3.6s; background: var(--leaf-pale); }
+.flow i:nth-child(5) { animation-delay: 4.8s; }
+@keyframes flow-move {
+  from { left: -26px; }
+  to   { left: 102%; }
+}
+
+/* Фильтр: документы, которые прошли, и те, что отсеялись. */
+.sieve { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 20px 0; }
+.sieve > span {
+  padding: 10px 12px; border: 2px solid var(--ink); background: var(--page);
+  font: 400 13px/1.5 var(--mono);
+  transition: transform .25s ease, opacity .25s ease;
+}
+.sieve > span.pass { border-color: var(--leaf); box-shadow: 4px 4px 0 var(--leaf); }
+.sieve > span.drop { opacity: .38; transform: translateY(6px); }
+.sieve > span b { display: block; font: 600 10px/1.4 var(--pixel); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+.sieve > span.pass b { color: var(--leaf); }
+
+/* Пульсация «сервер живой» — маленькая деталь на обложке. */
+.pulse { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--leaf-bright); animation: pulse 1.8s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.55); opacity: .45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow i, .pulse { animation: none; }
+  .flow i { left: 40%; }
+  * { scroll-behavior: auto; }
+}
+
+/* ── 5б. Переключатель языка драйвера ────────────────────────── */
+/* Выбор хранится в localStorage и проставляется в <html data-lang>
+   до отрисовки, поэтому блоки не мигают при загрузке. */
+.langbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.langbar__label { margin-right: 4px; font: 600 10px/1.4 var(--pixel); letter-spacing: 1.2px; text-transform: uppercase; color: var(--ink-faint); }
+.langbar button {
+  padding: 5px 11px 4px;
+  border: 2px solid var(--ink); background: var(--page); color: var(--ink-soft);
+  font: 600 11px/1.3 var(--mono); letter-spacing: .3px; cursor: pointer;
+}
+.langbar button:hover { color: var(--ink); border-color: var(--leaf); }
+.langbar button[aria-pressed="true"] {
+  background: var(--ink); color: var(--leaf-bright);
+  box-shadow: 3px 3px 0 var(--leaf);
+}
+
+/* Блоки кода, привязанные к языку: виден только выбранный.
+   Правило намеренно ограничено .book — иначе оно накрывает сам <html data-lang>. */
+.book [data-lang] { display: none; }
+:root[data-lang="python"] .book [data-lang="python"],
+:root[data-lang="cpp"] .book [data-lang="cpp"],
+:root[data-lang="go"] .book [data-lang="go"],
+:root[data-lang="ruby"] .book [data-lang="ruby"] { display: block; }
+/* До запуска скрипта и без JS показываем Python. */
+:root:not([data-lang]) .book [data-lang="python"] { display: block; }
+/* Строчные вставки внутри абзаца остаются строчными, иначе текст рвётся на строки. */
+:root[data-lang="python"] .book span[data-lang="python"],
+:root[data-lang="cpp"] .book span[data-lang="cpp"],
+:root[data-lang="go"] .book span[data-lang="go"],
+:root[data-lang="ruby"] .book span[data-lang="ruby"],
+:root:not([data-lang]) .book span[data-lang="python"] { display: inline; }
+
+/* Строки в C++ и Go длиннее питоновских: чуть мельче кегль, чтобы
+   в двухколоночной паре они помещались без горизонтальной прокрутки. */
+:root[data-lang="cpp"] figure.code pre,
+:root[data-lang="go"] figure.code pre { font-size: 13px; line-height: 1.6; }
+
+/* Подпись языка в шапке блока кода. */
+figure.code[data-lang] figcaption span:first-child { color: var(--leaf-bright); }
+
+/* ── 6. Кадры Compass, практики, служебное ───────────────────── */
+.shot { margin: 22px 0; border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); background: var(--page); }
+.shot img { display: block; width: 100%; height: auto; background: #fff; cursor: zoom-in; }
+.shot figcaption { padding: 9px 14px; border-top: 2px solid var(--ink); font: 600 11px/1.5 var(--mono); color: var(--ink-soft); }
+
+.lightbox { position: fixed; inset: 0; z-index: 90; display: none; place-items: center; padding: clamp(14px, 3vw, 42px); background: rgba(21, 26, 59, .92); cursor: zoom-out; }
+.lightbox.is-open { display: grid; }
+.lightbox figure { margin: 0; max-width: 100%; max-height: 100%; border: 3px solid var(--page); background: var(--page); }
+.lightbox img { display: block; max-width: 100%; max-height: 86vh; width: auto; }
+.lightbox figcaption { padding: 9px 14px; border-top: 2px solid var(--ink); font: 600 11px/1.5 var(--mono); color: var(--ink-soft); }
+.lightbox__hint { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); color: var(--leaf-pale); font: 600 10px/1 var(--pixel); letter-spacing: 1.4px; text-transform: uppercase; }
+
+/* Карточка практики и контрольной точки. */
+.work {
+  margin: 26px 0; border: 3px solid var(--ink); box-shadow: 8px 8px 0 var(--leaf); background: var(--page);
+}
+.work__head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding: 11px 16px; background: var(--ink); color: var(--leaf-pale); font: 600 11px/1.4 var(--pixel); letter-spacing: 1.3px; text-transform: uppercase; }
+.work__body { padding: 16px 18px; }
+.work__body h3:first-child { margin-top: 0; }
+.work--check { box-shadow: 8px 8px 0 var(--clay); }
+.work--check .work__head { background: var(--clay); }
+
+.repo {
+  display: inline-flex; align-items: center; gap: 9px;
+  margin: 6px 0; padding: 9px 15px;
+  border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--leaf);
+  background: var(--page); color: var(--ink);
+  font: 600 13px/1.3 var(--mono); text-decoration: none;
+}
+.repo:hover { box-shadow: 4px 4px 0 var(--ink); color: var(--ink); }
+.repo::before { content: "⌥"; font-family: var(--pixel); color: var(--leaf); }
+
+@media (max-width: 900px) {
+  body { font-size: 16px; }
+  .book { padding: 3vh 12px 6vh; }
+  .book__body { grid-template-columns: 34px minmax(0, 1fr); box-shadow: 6px 6px 0 var(--ink); }
+  .passport { grid-template-columns: 1fr 1fr; }
+  .contents ol { columns: 1; }
+  .ops > div { grid-template-columns: 1fr; gap: 6px; }
+  .pipeline__stage { border-right-width: 3px; border-bottom-width: 0; }
+  .pipeline__stage:last-child { border-bottom-width: 3px; }
+}
+
+@media print {
+  body { background: #fff; }
+  .book__body, .passport, .shot, figure.code, .table-scroll { box-shadow: none; }
+  .lightbox { display: none !important; }
+}
+
+/* Пометка вендорского материала в шапке кейса читается на тёмном фоне. */
+.case__head .vendor { margin-left: 0; border-color: var(--clay-pale); color: var(--clay-pale); }
+
+/* ── Переключатель операционной системы ─────────────────────────
+   Кнопки те же, что у языка. Блоки с data-os только прячутся: так правило
+   не спорит с data-lang и не ломает строки таблиц. В data-os можно перечислить
+   несколько систем через пробел: data-os="mac linux". */
+.langbar + .langbar { padding-left: 12px; border-left: 2px solid var(--rule); }
+:root[data-os="win"] .book [data-os]:not([data-os~="win"]),
+:root[data-os="mac"] .book [data-os]:not([data-os~="mac"]),
+:root[data-os="linux"] .book [data-os]:not([data-os~="linux"]),
+:root:not([data-os]) .book [data-os]:not([data-os~="win"]) { display: none !important; }
+
+/* Шапка с переключателями: название и номер главы — первой строкой,
+   кнопки — второй. Иначе на узком экране номер главы уезжает за край. */
+.running { flex-wrap: wrap; row-gap: 10px; }
+.running .eyebrow { flex: 1 1 0; min-width: 0; }
+.running__folio { order: 1; }
+.running:has(.langbar)::after { content: ""; order: 2; flex-basis: 100%; height: 0; }
+.running .langbar { order: 3; }
+
+@media (max-width: 600px) {
+  .langbar + .langbar { padding-left: 0; border-left: 0; }
+}
+
+/* Длинные адреса и имена в тексте переносятся, а не растягивают страницу. */
+:not(pre) > code { overflow-wrap: break-word; }
+@media (max-width: 480px) {
+  .passport { grid-template-columns: 1fr; }
+  .passport > div { border-right: 0; border-bottom: 2px solid var(--rule); }
+  .passport > div:last-child { border-bottom: 0; }
+}
+
+/* ── Как запускать примеры главы ─────────────────────────────────── */
+.runbox { margin: 0 0 28px; border: 3px solid var(--ink); background: var(--page); box-shadow: 6px 6px 0 var(--leaf); }
+.runbox__head { margin: 0; padding: 8px 16px; background: var(--leaf-pale); border-bottom: 2px solid var(--ink); font: 600 10.5px/1.4 var(--pixel); letter-spacing: 1.2px; text-transform: uppercase; }
+.runbox__row { display: grid; grid-template-columns: minmax(110px, 150px) minmax(0, 1fr); gap: 12px; padding: 9px 16px; border-bottom: 2px solid var(--rule); font-size: 14.5px; line-height: 1.55; }
+.runbox__row:last-child { border-bottom: 0; }
+.runbox__row > b { font: 600 10px/2 var(--pixel); letter-spacing: 1px; text-transform: uppercase; color: var(--ink-soft); }
+.runbox code { overflow-wrap: anywhere; }
+@media (max-width: 560px) { .runbox__row { grid-template-columns: 1fr; gap: 2px; } }
+
+/* Длинные слова в заголовках переносятся по слогам, а не раздвигают страницу на узком экране. */
+.leaf h1, .leaf h2, .leaf h3 { overflow-wrap: break-word; hyphens: auto; }
+
+/* ── Место под кадр с учебного ПК ─────────────────────────────── */
+.shot-todo { margin: 22px 0; padding: 18px 20px; border: 3px dashed var(--ink-soft); background: repeating-linear-gradient(135deg, var(--page), var(--page) 12px, var(--leaf-pale) 12px, var(--leaf-pale) 24px); }
+.shot-todo b { display: block; margin-bottom: 6px; font: 600 10.5px/1.4 var(--pixel); letter-spacing: 1.2px; text-transform: uppercase; color: var(--ink-soft); }
+.shot-todo p { margin: 0 0 6px; font-size: 14.5px; line-height: 1.5; }
+.shot-todo p:last-child { margin-bottom: 0; }

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ECEEF5">
+  <title>Каталог деталей · System design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Literata:ital,opsz,wght@0,7..72,600;0,7..72,700;1,7..72,400&family=Pixelify+Sans:wght@500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .groups-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 30px; padding: 0; list-style: none; }
+    .groups-nav li { margin: 0; }
+    .groups-nav a { display: inline-flex; align-items: center; gap: 7px; padding: 6px 11px; border: 2px solid var(--ink); background: var(--page); color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 600; }
+    .groups-nav a:hover { box-shadow: 3px 3px 0 var(--leaf); }
+    .groups-nav i { width: 10px; height: 10px; }
+    .parts { display: grid; gap: 16px; margin: 16px 0 10px; }
+    .part-card { display: grid; grid-template-columns: 10px minmax(0, 1fr); border: 3px solid var(--ink); background: var(--page); box-shadow: 6px 6px 0 var(--ink); }
+    .part-card__body { padding: 14px 18px 12px; }
+    .part-card h3 { margin: 0 0 2px; font-size: 21px; }
+    .part-card__short { margin: 0 0 10px; color: var(--ink-soft); font-size: 15px; }
+    .part-card dl { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 6px 16px; margin: 0; font-size: 15px; line-height: 1.5; }
+    .part-card dt { font: 600 10px/2 var(--pixel); letter-spacing: 1px; text-transform: uppercase; color: var(--leaf); }
+    .part-card dd { margin: 0; }
+    .part-card ul { margin: 0; padding-left: 18px; }
+    .part-card li { margin-bottom: 2px; }
+    @media (max-width: 640px) { .part-card dl { grid-template-columns: 1fr; gap: 0; } .part-card dd { margin-bottom: 8px; } }
+  </style>
+</head>
+<body>
+  <div class="book">
+    <div class="book__body">
+      <div class="spine"><span>System design · каталог деталей</span></div>
+
+      <main class="leaf">
+        <div class="running">
+          <p class="eyebrow"><a href="../index.html" style="text-decoration:none;color:inherit">System design</a> · каталог</p>
+          <p class="running__folio">КАТАЛОГ</p>
+        </div>
+
+        <header class="chapter-head">
+          <span class="chapter-num">КАТАЛОГ</span>
+          <h1>Каталог<br>деталей</h1>
+          <p class="lead">Все детали, из которых собирается схема в практикуме «Архитектор по заявке»: что это, когда деталь ставят на схему, как её соединяют с остальными и какие программы этим занимаются. Те же описания показываются в правой панели конструктора.</p>
+        </header>
+
+        <p>Стрелка на схеме идёт от того, кто обращается, к тому, к кому обращаются. Строка «Как подключают» в каждой карточке записана по этому правилу.</p>
+
+        <ul class="groups-nav" id="groups-nav"></ul>
+        <div id="catalog"></div>
+        <noscript><p>Каталог строится скриптом из файла <code>data/components.js</code>. Включите JavaScript в браузере.</p></noscript>
+
+        <div class="pager">
+          <a href="../praktikum/index.html">← Практикум</a>
+          <a href="../index.html">Содержание →</a>
+        </div>
+        <div class="colophon">
+          <span>System design · учебное издание</span>
+          <span class="author-line">© Макаров Максим Николаевич</span>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="../data/components.js"></script>
+  <script>
+    (() => {
+      const { GROUPS, COMPONENTS } = window.SD;
+      const esc = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+      document.getElementById('groups-nav').innerHTML = GROUPS.map(g =>
+        `<li><a href="#g-${g.id}"><i style="background:${g.color}"></i>${esc(g.name)}</a></li>`).join('');
+      const settingsText = c => (c.settings || []).map(s => {
+        const opts = s.options ? ': ' + s.options.map(o => o[1]).join(', ') : s.type === 'number' ? `: от ${s.min} до ${s.max}` : '';
+        return `<li>${esc(s.label)}${esc(opts)}</li>`;
+      }).join('');
+      document.getElementById('catalog').innerHTML = GROUPS.map((g, i) =>
+        `<h2 id="g-${g.id}"><span class="sec">${i + 1}</span>${esc(g.name)}</h2><div class="parts">`
+        + COMPONENTS.filter(c => c.group === g.id).map(c =>
+          `<article class="part-card" id="${c.id}"><i style="background:${g.color}"></i><div class="part-card__body">`
+          + `<h3>${esc(c.name)}</h3><p class="part-card__short">${esc(c.short)}</p><dl>`
+          + `<dt>Что это</dt><dd>${esc(c.what)}</dd>`
+          + `<dt>Когда ставить</dt><dd>${esc(c.when)}</dd>`
+          + `<dt>Как подключают</dt><dd>${esc(c.links)}</dd>`
+          + `<dt>Примеры</dt><dd>${esc(c.examples)}</dd>`
+          + (c.settings ? `<dt>Настройки</dt><dd><ul>${settingsText(c)}</ul></dd>` : '')
+          + '</dl></div></article>').join('') + '</div>').join('');
+    })();
+  </script>
+</body>
+</html>
