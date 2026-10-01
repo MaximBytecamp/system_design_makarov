@@ -1,5 +1,5 @@
 /* System design — типографика, книжная вёрстка и наглядные блоки.
-   Каркас общий со справочником по MongoDB, палитра своя: чертёжная синька.
+   Каркас общий со справочником по MongoDB, палитра своя: тёмный графит и бирюзовый чертёжный цвет.
    Автор: Макаров Максим Николаевич
 
    Файл разделён на части:
@@ -9,18 +9,18 @@
 
 /* ── 1. Переменные и основа ──────────────────────────────────── */
 :root {
-  --ink: #151A3B;
-  --ink-soft: #414A72;
-  --ink-faint: #949BBD;
-  --leaf: #4A3AD4;
-  --leaf-bright: #9E92FF;
-  --leaf-pale: #E4E1FF;
+  --ink: #13202B;
+  --ink-soft: #3E5162;
+  --ink-faint: #8FA0AE;
+  --leaf: #0B6E8A;
+  --leaf-bright: #4FC3DD;
+  --leaf-pale: #D6EEF3;
   --clay: #B8461B;
   --clay-pale: #F8E1D6;
-  --violet: #8A2A7A;
-  --paper: #ECEEF5;
+  --violet: #9A3412;
+  --paper: #EDF0F2;
   --page: #FCFCFF;
-  --rule: rgba(21, 26, 59, .16);
+  --rule: rgba(19, 32, 43, .16);
   --pixel: "Pixelify Sans", "Roboto Mono", monospace;
   --body: Inter, system-ui, -apple-system, sans-serif;
   --display: Literata, "PT Serif", Georgia, "Times New Roman", serif;
@@ -38,8 +38,8 @@ body {
   line-height: 1.6;
   /* Фон-«миллиметровка»: намёк на разлинованную тетрадь, а не на экран. */
   background-image:
-    linear-gradient(rgba(74, 58, 212, .07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(74, 58, 212, .07) 1px, transparent 1px);
+    linear-gradient(rgba(11, 110, 138, .07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11, 110, 138, .07) 1px, transparent 1px);
   background-size: 32px 32px;
   -webkit-font-smoothing: antialiased;
 }
@@ -94,7 +94,7 @@ code, kbd, samp { font-family: var(--mono); }
 .spine::before, .spine::after {
   content: "";
   position: absolute; top: 16px; bottom: 16px;
-  border-left: 2px dotted rgba(228, 225, 255, .4);
+  border-left: 2px dotted rgba(214, 238, 243, .4);
 }
 .spine::before { left: 16px; }
 .spine::after { right: 16px; }
@@ -185,7 +185,7 @@ figure.code figcaption {
   font: 600 10.5px/1.4 var(--pixel); letter-spacing: 1.1px; text-transform: uppercase;
 }
 figure.code pre { margin: 0; padding: 15px 18px; overflow-x: auto; font: 400 14px/1.65 var(--mono); }
-figure.code--out pre { background: #151A3B; color: #E4E1FF; }
+figure.code--out pre { background: #13202B; color: #D6EEF3; }
 figure.code--out figcaption { background: var(--ink-soft); }
 
 /* Кнопка копирования: подставляется скриптом в подпись блока кода.
@@ -398,7 +398,7 @@ figure.code[data-lang] figcaption span:first-child { color: var(--leaf-bright); 
 .shot img { display: block; width: 100%; height: auto; background: #fff; cursor: zoom-in; }
 .shot figcaption { padding: 9px 14px; border-top: 2px solid var(--ink); font: 600 11px/1.5 var(--mono); color: var(--ink-soft); }
 
-.lightbox { position: fixed; inset: 0; z-index: 90; display: none; place-items: center; padding: clamp(14px, 3vw, 42px); background: rgba(21, 26, 59, .92); cursor: zoom-out; }
+.lightbox { position: fixed; inset: 0; z-index: 90; display: none; place-items: center; padding: clamp(14px, 3vw, 42px); background: rgba(19, 32, 43, .92); cursor: zoom-out; }
 .lightbox.is-open { display: grid; }
 .lightbox figure { margin: 0; max-width: 100%; max-height: 100%; border: 3px solid var(--page); background: var(--page); }
 .lightbox img { display: block; max-width: 100%; max-height: 86vh; width: auto; }

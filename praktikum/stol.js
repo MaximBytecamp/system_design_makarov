@@ -133,12 +133,12 @@
       box = { x, y, w: Math.max(...xs) + NODE_W + 60 - x, h: Math.max(...ys) + NODE_H + 60 - y };
     }
     const parts = [];
-    parts.push(`<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#151A3B"/></marker>`
+    parts.push(`<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#13202B"/></marker>`
       + `<marker id="arrow-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#B8461B"/></marker>`
-      + `<pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1.2" fill="#C9CCE0"/></pattern></defs>`);
+      + `<pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1.2" fill="#C8D2D9"/></pattern></defs>`);
     if (forExport) {
       parts.push(`<rect x="${box.x}" y="${box.y}" width="${box.w}" height="${box.h}" fill="#ffffff"/>`);
-      parts.push(`<text x="${box.x + 40}" y="${box.y + 34}" font-family="${font}" font-size="18" font-weight="700" fill="#151A3B">${esc(`«${theCase.company}» — схема системы`)}</text>`);
+      parts.push(`<text x="${box.x + 40}" y="${box.y + 34}" font-family="${font}" font-size="18" font-weight="700" fill="#13202B">${esc(`«${theCase.company}» — схема системы`)}</text>`);
     } else {
       parts.push(`<rect class="bg" width="${CANVAS_W}" height="${CANVAS_H}" fill="url(#dots)"/>`);
     }
@@ -152,9 +152,9 @@
       const d = edgePath(a, b);
       parts.push(`<g class="edge${bad ? ' is-bad' : ''}${sel ? ' is-sel' : ''}" data-edge="${e.id}">`
         + (forExport ? '' : `<path class="edge__hit" d="${d}"/>`)
-        + `<path class="edge__line" d="${d}" fill="none" stroke="${bad ? '#B8461B' : '#151A3B'}" stroke-width="2" marker-end="url(#${bad ? 'arrow-bad' : 'arrow'})"/></g>`);
+        + `<path class="edge__line" d="${d}" fill="none" stroke="${bad ? '#B8461B' : '#13202B'}" stroke-width="2" marker-end="url(#${bad ? 'arrow-bad' : 'arrow'})"/></g>`);
     });
-    parts.push('</g><path class="ghost" d="" pointer-events="none" fill="none" stroke="#4A3AD4" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#arrow)"/>');
+    parts.push('</g><path class="ghost" d="" pointer-events="none" fill="none" stroke="#0B6E8A" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#arrow)"/>');
 
     parts.push('<g class="nodes">');
     state.nodes.forEach(n => {
@@ -162,13 +162,13 @@
       const bad = !forExport && marks.nodes.includes(n.id);
       const sel = !forExport && selected && selected.kind === 'node' && selected.id === n.id;
       parts.push(`<g class="node${bad ? ' is-bad' : ''}${sel ? ' is-sel' : ''}" data-node="${n.id}" transform="translate(${n.x},${n.y})">`
-        + `<rect class="node__box" width="${NODE_W}" height="${NODE_H}" rx="3" fill="#ffffff" stroke="#151A3B" stroke-width="2"/>`
+        + `<rect class="node__box" width="${NODE_W}" height="${NODE_H}" rx="3" fill="#ffffff" stroke="#13202B" stroke-width="2"/>`
         + `<rect x="1" y="1" width="8" height="${NODE_H - 2}" fill="${group.color}"/>`
         + `<text x="18" y="18" font-family="${mono}" font-size="9.5" font-weight="700" letter-spacing=".6" fill="${group.color}">${esc(fit(comp.name.toUpperCase(), `700 9.5px ${mono}`, room - 10))}</text>`
-        + `<text x="18" y="37" font-family="${font}" font-size="14" font-weight="700" fill="#151A3B">${esc(fit(label(n), `700 14px ${font}`, room))}</text>`
-        + `<text x="18" y="54" font-family="${font}" font-size="11" fill="#414A72">${esc(fit(summary(n), `400 11px ${font}`, room))}</text>`
-        + (forExport ? '' : `<circle class="port port--in" cx="0" cy="${NODE_H / 2}" r="5" fill="#ffffff" stroke="#151A3B" stroke-width="2"/>`
-          + `<circle class="port port--out" data-port="${n.id}" cx="${NODE_W}" cy="${NODE_H / 2}" r="7" fill="#ffffff" stroke="#151A3B" stroke-width="2"><title>Потяните, чтобы провести стрелку</title></circle>`)
+        + `<text x="18" y="37" font-family="${font}" font-size="14" font-weight="700" fill="#13202B">${esc(fit(label(n), `700 14px ${font}`, room))}</text>`
+        + `<text x="18" y="54" font-family="${font}" font-size="11" fill="#3E5162">${esc(fit(summary(n), `400 11px ${font}`, room))}</text>`
+        + (forExport ? '' : `<circle class="port port--in" cx="0" cy="${NODE_H / 2}" r="5" fill="#ffffff" stroke="#13202B" stroke-width="2"/>`
+          + `<circle class="port port--out" data-port="${n.id}" cx="${NODE_W}" cy="${NODE_H / 2}" r="7" fill="#ffffff" stroke="#13202B" stroke-width="2"><title>Потяните, чтобы провести стрелку</title></circle>`)
         + '</g>');
     });
     parts.push('</g>');
@@ -602,7 +602,7 @@
     return `<div class="ent" data-ent="${e.id}"><div class="ent__name"><span>${esc(e.name)}</span>`
       + (grade ? `<span class="grade grade--${grade}">${GR[grade]}</span>` : '') + '</div>'
       + `<div class="ent__sample">${esc(e.sample)}</div><div class="ent__vol">${esc(e.volume)}</div>`
-      + `<div class="chips">${stores.map(t => `<button type="button" class="chip" style="--chip:${DATA_COLOR[t] || '#151A3B'}" data-store="${t}" aria-pressed="${chosen.includes(t)}">${esc(name(t))}</button>`).join('')}</div>`
+      + `<div class="chips">${stores.map(t => `<button type="button" class="chip" style="--chip:${DATA_COLOR[t] || '#13202B'}" data-store="${t}" aria-pressed="${chosen.includes(t)}">${esc(name(t))}</button>`).join('')}</div>`
       + (grade && grade !== 'empty'
         ? `<p class="ent__why"><b>Лучший выбор: ${esc(e.best.map(name).join(' или '))}.</b>`
           + (e.also.length ? ` Можно добавить: ${esc(e.also.map(name).join(', '))}.` : '') + ` ${esc(e.why)}</p>`

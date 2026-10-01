@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#ECEEF5">
+  <meta name="theme-color" content="#EDF0F2">
   <title>System design · Архитектура приложений · Макаров Максим Николаевич</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
     /* Путь запроса на обложке: точка проходит узлы по порядку. */
     .route { padding: 18px 18px 12px; border: 3px solid var(--ink); background: var(--page); box-shadow: 7px 7px 0 var(--ink); }
     .route__tag { display: inline-block; margin: 0 0 12px; padding: 6px 11px; background: var(--ink); color: var(--leaf-bright); font: 600 10px/1 var(--pixel); letter-spacing: 1.4px; text-transform: uppercase; }
-    .route svg { display: block; width: 100%; height: auto; }
+    .route svg { display: block; width: 100%; max-width: 360px; height: auto; aspect-ratio: 320 / 320; margin: 0 auto; overflow: visible; }
     .route p { margin: 10px 0 0; font-size: 14px; line-height: 1.45; color: var(--ink-soft); }
 
     .modules { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(330px, 100%), 1fr)); gap: 16px; margin-top: 22px; }
@@ -73,22 +73,22 @@
 
           <aside class="route" aria-label="Путь запроса через систему">
             <span class="route__tag">Путь одного запроса</span>
-            <svg viewBox="0 0 320 300" role="img" aria-label="Клиент, балансировщик, ограничитель частоты, сервер приложения, Redis и PostgreSQL">
-              <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#151A3B"/></marker></defs>
-              <g fill="none" stroke="#151A3B" stroke-width="2" marker-end="url(#ar)">
+            <svg viewBox="0 0 320 320" width="320" height="320" role="img" aria-label="Клиент, балансировщик, ограничитель частоты, сервер приложения, Redis и PostgreSQL">
+              <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#13202B"/></marker></defs>
+              <g fill="none" stroke="#13202B" stroke-width="2" marker-end="url(#ar)">
                 <path d="M160,46 L160,70"/><path d="M160,114 L160,138"/><path d="M160,182 L160,206"/>
-                <path d="M130,250 C110,262 90,262 82,268"/><path d="M190,250 C210,262 230,262 238,268"/>
+                <path d="M130,250 C100,262 72,256 72,274"/><path d="M190,250 C220,262 248,256 248,274"/>
               </g>
-              <g font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#151A3B">
-                <rect x="85" y="6" width="150" height="40" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="86" y="7" width="7" height="38" fill="#0E7490"/><text x="104" y="31">Браузер</text>
-                <rect x="85" y="74" width="150" height="40" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="86" y="75" width="7" height="38" fill="#6D28D9"/><text x="104" y="99">Балансировщик</text>
-                <rect x="85" y="142" width="150" height="40" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="86" y="143" width="7" height="38" fill="#6D28D9"/><text x="104" y="167">Ограничитель</text>
-                <rect x="85" y="210" width="150" height="40" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="86" y="211" width="7" height="38" fill="#1D4ED8"/><text x="104" y="235">Сервер</text>
-                <rect x="10" y="256" width="120" height="40" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="11" y="257" width="7" height="38" fill="#047857"/><text x="28" y="281">Redis</text>
-                <rect x="190" y="256" width="120" height="40" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="191" y="257" width="7" height="38" fill="#047857"/><text x="208" y="281">PostgreSQL</text>
+              <g font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#13202B">
+                <rect x="85" y="6" width="150" height="40" fill="#fff" stroke="#13202B" stroke-width="2"/><rect x="86" y="7" width="7" height="38" fill="#0E7490"/><text x="104" y="31">Браузер</text>
+                <rect x="85" y="74" width="150" height="40" fill="#fff" stroke="#13202B" stroke-width="2"/><rect x="86" y="75" width="7" height="38" fill="#C2410C"/><text x="104" y="99">Балансировщик</text>
+                <rect x="85" y="142" width="150" height="40" fill="#fff" stroke="#13202B" stroke-width="2"/><rect x="86" y="143" width="7" height="38" fill="#C2410C"/><text x="104" y="167">Ограничитель</text>
+                <rect x="85" y="210" width="150" height="40" fill="#fff" stroke="#13202B" stroke-width="2"/><rect x="86" y="211" width="7" height="38" fill="#1D4ED8"/><text x="104" y="235">Сервер</text>
+                <rect x="10" y="276" width="120" height="40" fill="#fff" stroke="#13202B" stroke-width="2"/><rect x="11" y="277" width="7" height="38" fill="#047857"/><text x="28" y="301">Redis</text>
+                <rect x="190" y="276" width="120" height="40" fill="#fff" stroke="#13202B" stroke-width="2"/><rect x="191" y="277" width="7" height="38" fill="#047857"/><text x="208" y="301">PostgreSQL</text>
               </g>
-              <circle r="6" fill="#9E92FF" stroke="#151A3B" stroke-width="2">
-                <animateMotion dur="5s" repeatCount="indefinite" path="M160,26 L160,94 L160,162 L160,230 C200,250 230,262 250,276 C230,262 200,250 160,230 L160,162 L160,94 L160,26" keyTimes="0;0.15;0.3;0.45;0.55;0.65;0.8;0.9;1" keyPoints="0;0.15;0.3;0.45;0.5;0.55;0.7;0.85;1" calcMode="linear"/>
+              <circle r="6" fill="#4FC3DD" stroke="#13202B" stroke-width="2">
+                <animateMotion dur="5s" repeatCount="indefinite" path="M160,26 L160,94 L160,162 L160,230 C200,250 248,256 248,290 C248,256 200,250 160,230 L160,162 L160,94 L160,26" keyTimes="0;0.15;0.3;0.45;0.55;0.65;0.8;0.9;1" keyPoints="0;0.15;0.3;0.45;0.5;0.55;0.7;0.85;1" calcMode="linear"/>
               </circle>
             </svg>
             <p>Запрос проходит балансировщик и ограничитель частоты, сервер читает данные из базы, ответ возвращается тем же путём.</p>

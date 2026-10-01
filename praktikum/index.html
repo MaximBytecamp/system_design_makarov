@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#ECEEF5">
+  <meta name="theme-color" content="#EDF0F2">
   <title>Практикум · Архитектор по заявке · System design</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -98,20 +98,20 @@
           <li>К очереди ведут две стрелки: от сервера, который кладёт задачу, и от фонового обработчика, который её забирает. Обработчик обращается к очереди сам.</li>
           <li>Ограничитель частоты стоит на пути запроса перед тем, что он защищает. Если он хранит счётчики в Redis, от ограничителя к Redis ведёт ещё одна стрелка.</li>
         </ul>
-        <svg class="mini" viewBox="0 0 860 150" role="img" aria-label="Пример: сайт, балансировщик, ограничитель частоты, сервер приложения, PostgreSQL и Redis">
-          <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#151A3B"/></marker></defs>
-          <g font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#151A3B">
-            <rect x="20" y="40" width="130" height="44" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="21" y="41" width="7" height="42" fill="#0E7490"/><text x="40" y="67">Сайт</text>
-            <rect x="190" y="40" width="150" height="44" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="191" y="41" width="7" height="42" fill="#6D28D9"/><text x="210" y="67">Балансировщик</text>
-            <rect x="380" y="40" width="150" height="44" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="381" y="41" width="7" height="42" fill="#6D28D9"/><text x="400" y="67">Ограничитель</text>
-            <rect x="570" y="40" width="130" height="44" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="571" y="41" width="7" height="42" fill="#1D4ED8"/><text x="590" y="67">Сервер</text>
-            <rect x="730" y="10" width="115" height="44" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="731" y="11" width="7" height="42" fill="#047857"/><text x="748" y="37">PostgreSQL</text>
-            <rect x="730" y="96" width="115" height="44" fill="#fff" stroke="#151A3B" stroke-width="2"/><rect x="731" y="97" width="7" height="42" fill="#047857"/><text x="748" y="123">Redis</text>
+        <svg class="mini" viewBox="0 0 860 150" role="img" aria-label="Пример: сайт, балансировщик, ограничитель частоты, сервер приложения, PostgreSQL и Redis">
+          <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#13202B"/></marker></defs>
+          <g font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#13202B">
+            <rect x="20" y="40" width="130" height="44" fill="#fff" stroke="#13202B" stroke-width="2"/><rect x="21" y="41" width="7" height="42" fill="#0E7490"/><text x="40" y="67">Сайт</text>
+            <rect x="190" y="40" width="150" height="44" fill="#fff" stroke="#13202B" stroke-width="2"/><rect x="191" y="41" width="7" height="42" fill="#C2410C"/><text x="210" y="67">Балансировщик</text>
+            <rect x="380" y="40" width="150" height="44" fill="#fff" stroke="#13202B" stroke-width="2"/><rect x="381" y="41" width="7" height="42" fill="#C2410C"/><text x="400" y="67">Ограничитель</text>
+            <rect x="570" y="40" width="130" height="44" fill="#fff" stroke="#13202B" stroke-width="2"/><rect x="571" y="41" width="7" height="42" fill="#1D4ED8"/><text x="590" y="67">Сервер</text>
+            <rect x="730" y="10" width="115" height="44" fill="#fff" stroke="#13202B" stroke-width="2"/><rect x="731" y="11" width="7" height="42" fill="#047857"/><text x="748" y="37">PostgreSQL</text>
+            <rect x="730" y="96" width="115" height="44" fill="#fff" stroke="#13202B" stroke-width="2"/><rect x="731" y="97" width="7" height="42" fill="#047857"/><text x="748" y="123">Redis</text>
           </g>
-          <g fill="none" stroke="#151A3B" stroke-width="2" marker-end="url(#a)">
+          <g fill="none" stroke="#13202B" stroke-width="2" marker-end="url(#a)">
             <path d="M150,62 L188,62"/><path d="M340,62 L378,62"/><path d="M530,62 L568,62"/>
-            <path d="M700,55 C715,55 712,32 728,32"/><path d="M700,70 C715,70 712,118 728,118"/>
-            <path d="M455,84 C455,130 600,118 728,124"/>
+            <path d="M700,55 C715,55 712,32 728,32"/><path d="M700,70 C715,70 712,118 728,118"/>
+            <path d="M455,84 C455,130 600,118 728,124"/>
           </g>
         </svg>
         <p>На рисунке ограничитель частоты пропускает к серверу только разрешённые запросы и хранит счётчики в Redis. Сервер обращается к PostgreSQL и к Redis.</p>

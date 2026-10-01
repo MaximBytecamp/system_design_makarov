@@ -17,7 +17,7 @@ body.desk > .pick > * { max-width: 1132px; margin-left: auto; margin-right: auto
 
 /* Ход работы: четыре шага в шапке. */
 .steps { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
-.steps li { margin: 0; padding: 5px 10px 4px; border: 2px solid rgba(228, 225, 255, .35); font: 600 10.5px/1.3 var(--pixel); letter-spacing: 1px; text-transform: uppercase; color: rgba(228, 225, 255, .6); }
+.steps li { margin: 0; padding: 5px 10px 4px; border: 2px solid rgba(214, 238, 243, .35); font: 600 10.5px/1.3 var(--pixel); letter-spacing: 1px; text-transform: uppercase; color: rgba(214, 238, 243, .6); }
 .steps li.is-open { border-color: var(--leaf-bright); color: var(--leaf-pale); }
 .steps li.is-done { background: var(--leaf-bright); border-color: var(--leaf-bright); color: var(--ink); }
 
@@ -159,15 +159,15 @@ body.desk > .pick > * { max-width: 1132px; margin-left: auto; margin-right: auto
    без стилей), здесь — только состояния. */
 .node { cursor: grab; }
 .node.is-drag { cursor: grabbing; }
-.node.is-sel > .node__box { stroke: #4A3AD4; stroke-width: 3.5; }
+.node.is-sel > .node__box { stroke: #0B6E8A; stroke-width: 3.5; }
 .node.is-bad > .node__box { stroke: #B8461B; stroke-width: 3.5; stroke-dasharray: 6 4; }
 .port { cursor: crosshair; }
-.port--out:hover { fill: #4A3AD4; }
-.node.is-target > .node__box { stroke: #4A3AD4; stroke-width: 3.5; fill: #F0EEFF; }
+.port--out:hover { fill: #0B6E8A; }
+.node.is-target > .node__box { stroke: #0B6E8A; stroke-width: 3.5; fill: #E8F6F9; }
 .edge { cursor: pointer; }
 .edge__hit { stroke: transparent; stroke-width: 14; fill: none; }
-.edge:hover .edge__line { stroke: #4A3AD4; }
-.edge.is-sel .edge__line { stroke: #4A3AD4; stroke-width: 3.5; }
+.edge:hover .edge__line { stroke: #0B6E8A; }
+.edge.is-sel .edge__line { stroke: #0B6E8A; stroke-width: 3.5; }
 .edge.is-bad .edge__line { stroke: #B8461B; stroke-width: 3.5; stroke-dasharray: 7 5; }
 
 /* ── Детали и свойства ────────────────────────────────────────── */

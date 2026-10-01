@@ -15,7 +15,7 @@
 (function () {
   const GROUPS = [
     { id: 'clients', name: 'Клиенты', color: '#0E7490' },
-    { id: 'entry', name: 'Вход и защита', color: '#6D28D9' },
+    { id: 'entry', name: 'Вход и защита', color: '#C2410C' },
     { id: 'app', name: 'Приложение', color: '#1D4ED8' },
     { id: 'data', name: 'Хранение данных', color: '#047857' },
     { id: 'async', name: 'Очереди и события', color: '#B45309' },
