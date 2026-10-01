@@ -636,7 +636,7 @@
         + '<div class="row"><button type="button" class="btn" data-check="1">Проверить схему</button></div>'
         + resultsHtml(1)
         + (state.passed[1] && state.open >= 2 ? '<p class="summary is-pass">Открыто письмо 2.</p>' : '')
-        + noteHtml(1, 'Обоснование схемы', 'Почему на схеме именно эти детали и связи. Одна-две фразы на каждое решение со ссылкой на строку письма.');
+        + noteHtml(1, 'Обоснование схемы', 'Почему на схеме эти детали и связи. Одна-две фразы на каждое решение со ссылкой на строку письма.');
     } else if (tab === 2) {
       const stores = storesOnScheme();
       const graded = !!state.checks[2];
